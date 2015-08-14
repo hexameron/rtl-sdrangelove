@@ -29,7 +29,7 @@ MESSAGE_CLASS_DEFINITION(GNURadioInput::MsgReportGNURadio, Message)
 GNURadioInput::Settings::Settings() :
 	m_args(""),
 	m_freqCorr(0),
-	m_sampRate(0),
+	m_sampRate(1024e3),
 	m_antenna(""),
 	m_dcoff(""),
 	m_iqbal(""),
@@ -40,7 +40,7 @@ GNURadioInput::Settings::Settings() :
 void GNURadioInput::Settings::resetToDefaults()
 {
 	m_args = "";
-	m_sampRate = 0;
+	m_sampRate = 1024e3;
 	m_freqCorr = 0;
 	m_antenna = "";
 	m_dcoff = "";
@@ -51,12 +51,11 @@ void GNURadioInput::Settings::resetToDefaults()
 QByteArray GNURadioInput::Settings::serialize() const
 {
 	SimpleSerializer s(1);
-//	s.writeString(1, m_args);
-//	s.writeDouble(2, m_freqCorr);
-//	s.writeDouble(3, m_sampRate);
-//	s.writeString(4, m_antenna);
-//	s.writeString(5, m_dcoff);
-//	s.writeString(5, m_iqbal);
+	s.writeString(1, m_args);
+	s.writeDouble(2, m_freqCorr);
+	s.writeDouble(3, m_sampRate);
+	s.writeString(4, m_antenna);
+	s.writeDouble(5, m_bandwidth);
 	return s.final();
 }
 
@@ -70,12 +69,13 @@ bool GNURadioInput::Settings::deserialize(const QByteArray& data)
 	}
 
 	if(d.getVersion() == 1) {
-//		d.readString(1, &m_args, "");
-//		d.readDouble(2, &m_freqCorr, 0);
-//		d.readDouble(3, &m_sampRate, 0);
-//		d.readString(4, &m_antenna, "");
-//		d.readString(5, &m_dcoff, "");
-//		d.readString(5, &m_iqbal, "");
+		d.readString(1, &m_args, "");
+		d.readDouble(2, &m_freqCorr, 0);
+		d.readDouble(3, &m_sampRate, 1024e3);
+		d.readString(4, &m_antenna, "");
+		d.readDouble(5, &m_bandwidth, 0);
+		m_dcoff = "";
+		m_iqbal = "";
 		return true;
 	} else {
 		resetToDefaults();
