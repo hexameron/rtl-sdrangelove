@@ -94,6 +94,9 @@ GNURadioInput::GNURadioInput(MessageQueue* msgQueueToGUI) :
 GNURadioInput::~GNURadioInput()
 {
 	stopInput();
+	if (m_GnuradioThread)
+		delete m_GnuradioThread;
+	m_GnuradioThread = NULL;
 }
 
 bool GNURadioInput::startInput(int device)
@@ -107,7 +110,7 @@ bool GNURadioInput::startInput(int device)
 	QMutexLocker mutexLocker(&m_mutex);
 
 	if(m_GnuradioThread != NULL)
-		stopInput();
+		m_GnuradioThread->stopWork();
 
 	if(!m_sampleFifo.setSize( 2 * 1024 * 1024 )) {
 		qCritical("Could not allocate SampleFifo");
@@ -117,7 +120,8 @@ bool GNURadioInput::startInput(int device)
 	m_deviceDescription = m_settings.m_args;
 
 	// pass device arguments from the gui
-	m_GnuradioThread = new GnuradioThread(m_settings.m_args, &m_sampleFifo);
+	if(m_GnuradioThread == NULL)
+		m_GnuradioThread = new GnuradioThread(m_settings.m_args, &m_sampleFifo);
 	if(m_GnuradioThread == NULL) {
 		qFatal("out of memory");
 		goto failed;
@@ -211,10 +215,7 @@ void GNURadioInput::stopInput()
 
 	if(m_GnuradioThread != NULL) {
 		m_GnuradioThread->stopWork();
-		delete m_GnuradioThread;
-		m_GnuradioThread = NULL;
 	}
-
 	m_deviceDescription.clear();
 }
 
