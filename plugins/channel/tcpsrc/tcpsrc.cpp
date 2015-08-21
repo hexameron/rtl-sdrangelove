@@ -200,7 +200,7 @@ bool TCPSrc::handleMessage(Message* cmd)
 
 void TCPSrc::closeAllSockets(Sockets* sockets)
 {
-	for(int i = 0; i < sockets->count(); ++i) {
+	for(int i=sockets->count()-1; i>=0; i--) {
 		MsgTCPSrcConnection* msg = MsgTCPSrcConnection::create(false, sockets->at(i).id, QHostAddress(), 0);
 		msg->submit(m_uiMessageQueue, (PluginGUI*)m_tcpSrcGUI);
 		sockets->at(i).socket->close();
