@@ -5,6 +5,7 @@
 #include "gui/rollupwidget.h"
 #include "plugin/plugingui.h"
 #include "tcpsrc.h"
+#include "rigctl.h"
 
 class PluginAPI;
 class ChannelMarker;
@@ -31,6 +32,7 @@ public:
 	bool deserialize(const QByteArray& data);
 
 	bool handleMessage(Message* message);
+	void freqChange(qint64 freq);
 
 private slots:
 	void channelMarkerChanged();
@@ -47,6 +49,8 @@ private:
 	PluginAPI* m_pluginAPI;
 	TCPSrc* m_tcpSrc;
 	ChannelMarker* m_channelMarker;
+	RigCtlServer *m_rigServer;
+	RigCtl *m_rig;
 
 	// settings
 	TCPSrc::SampleFormat m_sampleFormat;

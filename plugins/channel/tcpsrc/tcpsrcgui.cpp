@@ -8,6 +8,8 @@
 #include "gui/basicchannelsettingswidget.h"
 #include "ui_tcpsrcgui.h"
 
+#define TUNERFREQ (434.5e6)
+
 TCPSrcGUI* TCPSrcGUI::create(PluginAPI* pluginAPI)
 {
 	TCPSrcGUI* gui = new TCPSrcGUI(pluginAPI);
@@ -138,6 +140,11 @@ TCPSrcGUI::TCPSrcGUI(PluginAPI* pluginAPI, QWidget* parent) :
 	m_threadedSampleSink = new ThreadedSampleSink(m_channelizer);
 	m_pluginAPI->addSampleSink(m_threadedSampleSink);
 
+	m_rig = new RigCtl();
+	m_rig->setFreq(TUNERFREQ);
+	m_rig->setMode(0);
+	m_rigServer = new RigCtlServer(this, m_rig, 19997);
+
 	ui->glSpectrum->setCenterFrequency(0);
 	ui->glSpectrum->setSampleRate(ui->sampleRate->text().toInt());
 	ui->glSpectrum->setDisplayWaterfall(true);
@@ -197,6 +204,7 @@ void TCPSrcGUI::applySettings()
 	m_channelizer->configure(m_threadedSampleSink->getMessageQueue(),
 		outputSampleRate,
 		m_channelMarker->getCenterFrequency());
+	m_rig->setFreq(TUNERFREQ + m_channelMarker->getCenterFrequency());
 
 	TCPSrc::SampleFormat sampleFormat;
 	switch(ui->sampleFormat->currentIndex()) {
@@ -294,3 +302,9 @@ void TCPSrcGUI::delConnection(quint32 id)
 		}
 	}
 }
+
+void TCPSrcGUI::freqChange(qint64 freq)
+{
+	m_channelMarker->setCenterFrequency(freq);
+}
+

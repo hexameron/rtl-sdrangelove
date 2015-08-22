@@ -154,6 +154,7 @@ const unsigned short RigCtlServer::RIGCTL_PORT(19999);
 double RigCtl::getFreq() {
 	return m_freq;
 }
+
 void RigCtl::setFreq(double freq) {
 	m_freq = freq;
 }
@@ -161,17 +162,14 @@ void RigCtl::setFreq(double freq) {
 int RigCtl::getMode() {
 	return m_mode;
 }
+
 void RigCtl::setMode(int mode) {
 	m_mode = mode;
 }
 
-RigCtl* RigCtlServer::getRig() {
-	return m_rig;
-}
-
-RigCtlServer::RigCtlServer(QObject *parent,  unsigned short rigctl_port)
+RigCtlServer::RigCtlServer(QObject *parent, RigCtl *rig,  unsigned short rigctl_port)
         : QObject(parent) {
-	m_rig = new RigCtl();
+	m_rig = rig;
         server = new QTcpServer(this);
         if (!server->listen(QHostAddress::Any, rigctl_port)) {
                 qCritical("rigctl: failed to bind socket on port %d\n", rigctl_port);

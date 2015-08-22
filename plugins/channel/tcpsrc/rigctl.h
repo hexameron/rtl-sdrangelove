@@ -39,9 +39,8 @@ class RigCtlServer : public QObject {
         Q_OBJECT
 
         public:
-                RigCtlServer(QObject *parent = 0, unsigned short rigctl_port = RIGCTL_PORT);
+                RigCtlServer(QObject *parent = 0, RigCtl *rig = 0, unsigned short rigctl_port = RIGCTL_PORT);
 		~RigCtlServer(){};
-		RigCtl* getRig();
                 static const unsigned short RIGCTL_PORT;
 
         public slots:
