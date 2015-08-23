@@ -56,6 +56,7 @@ private:
 	TCPSrc::SampleFormat m_sampleFormat;
 	Real m_outputSampleRate;
 	Real m_rfBandwidth;
+	qint64 m_tunerFreq;
 	int m_boost;
 	int m_tcpPort;
 	bool m_basicSettingsShown;

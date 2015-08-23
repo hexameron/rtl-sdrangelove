@@ -72,11 +72,11 @@ void RigCtlSocket::readyRead() {
          */
 
         if (command[0] == 'f') { // get_freq
-            out << QString::number(m_rig->getFreq(),'e', 8) << "\n";
+            out << QString::number((double)m_rig->getFreq(),'e', 8) << "\n";
             output = true;
         } else if(cmdlist[0].compare("F") == 0 && cmdlistcnt == 2) { // set_freq
             QString newf = cmdlist[1];
-            m_rig->setFreq(atof(newf.toUtf8()));
+            m_rig->requestFreq((qint64)atof(newf.toUtf8()));
         } else if (command[0] == 'v') { // get_vfo
             out  << "VFOA\n";
 	    output = true;
@@ -151,12 +151,31 @@ void RigCtlSocket::readyRead() {
 
 const unsigned short RigCtlServer::RIGCTL_PORT(19999);
 
-double RigCtl::getFreq() {
+RigCtl::RigCtl(ChannelMarker* channel) {
+	m_channel = channel;
+	m_tunerFreq = 1.02e8;
+	m_samplerate2 = 96000;
+}
+
+qint64 RigCtl::getFreq() {
 	return m_freq;
 }
 
-void RigCtl::setFreq(double freq) {
-	m_freq = freq;
+void RigCtl::requestFreq(qint64 freq) {
+	qint64 newfreq;
+
+	newfreq = freq - m_tunerFreq;
+	if (newfreq > m_samplerate2)
+		newfreq = m_samplerate2;
+	else if (newfreq < -m_samplerate2)
+		newfreq = -m_samplerate2;
+
+	m_freq = newfreq + m_tunerFreq;
+	m_channel->setCenterFrequency(newfreq);
+}
+
+void RigCtl::setFreq(qint64 freq) {
+	m_freq = m_tunerFreq + freq;
 }
 
 int RigCtl::getMode() {
@@ -186,15 +205,4 @@ void RigCtlServer::newConnection() {
         connect(conn, SIGNAL(disconnected()), sock, SLOT(disconnected()));
         connect(conn, SIGNAL(readyRead()), sock, SLOT(readyRead()));
 }
-
-#if 0
-	server = new RigCtlServer(object, 19997);
-	rig = server->getRig();
-	rig->setFreq(434.5e6);
-	rig->setMode(0);
-	while (true) {
-		usleep(50e3);
-		app.processEvents();
-	}
-#endif
 

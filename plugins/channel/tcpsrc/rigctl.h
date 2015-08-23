@@ -4,17 +4,23 @@
 #include <QtCore/QObject>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
+#include "dsp/channelmarker.h"
 
 class RigCtl {
 	public:
-		RigCtl(){};
+		RigCtl(ChannelMarker* channel = 0);
 		~RigCtl(){};
-		double getFreq();
-		void setFreq(double freq);
+		qint64 getFreq();
+		void setFreq(qint64 freq);
+		void requestFreq(qint64 freq);
 		int getMode();
-		void setMode(int);
-
+		void setMode(int mode);
+		void setTunerFreq(qint64 freq) {m_tunerFreq = freq;}
+		void setTunerSamples(int samples) {m_samplerate2 = samples / 2;}
 	private:
+		ChannelMarker* m_channel;
+		qint64 m_tunerFreq;
+		int m_samplerate2;
 		double m_freq;
 		int m_mode;
 };
