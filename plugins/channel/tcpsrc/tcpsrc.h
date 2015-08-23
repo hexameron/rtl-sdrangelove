@@ -7,6 +7,8 @@
 #include "dsp/fftfilt.h"
 #include "dsp/interpolator.h"
 #include "util/message.h"
+#include "dsp/dspcommands.h"
+#include "rigctl.h"
 
 #define tcpFftLen 2048
 
@@ -30,7 +32,7 @@ public:
 
 	void configure(MessageQueue* messageQueue, SampleFormat sampleFormat, Real outputSampleRate, Real rfBandwidth, int tcpPort, int boost);
 	void setSpectrum(MessageQueue* messageQueue, bool enabled);
-
+	void setRig(RigCtl* rig) {m_rig = rig;}
 	void feed(SampleVector::const_iterator begin, SampleVector::const_iterator end, bool positiveOnly);
 	void start();
 	void stop();
@@ -119,9 +121,9 @@ protected:
 
 	MessageQueue* m_uiMessageQueue;
 	TCPSrcGUI* m_tcpSrcGUI;
+	RigCtl* m_rig;
 
 	int m_inputSampleRate;
-
 	int m_sampleFormat;
 	Real m_outputSampleRate;
 	Real m_rfBandwidth;

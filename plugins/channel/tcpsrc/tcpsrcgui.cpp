@@ -124,6 +124,7 @@ TCPSrcGUI::TCPSrcGUI(PluginAPI* pluginAPI, QWidget* parent) :
 	ui(new Ui::TCPSrcGUI),
 	m_pluginAPI(pluginAPI),
 	m_tcpSrc(NULL),
+	m_rig(NULL),
 	m_basicSettingsShown(false)
 {
 	ui->setupUi(this);
@@ -154,6 +155,7 @@ TCPSrcGUI::TCPSrcGUI(PluginAPI* pluginAPI, QWidget* parent) :
 
 	m_rig = new RigCtl(m_channelMarker);
 	m_rigServer = new RigCtlServer(this, m_rig, 19997);
+	m_tcpSrc->setRig(m_rig);
 
 	ui->spectrumGUI->setBuddies(m_threadedSampleSink->getMessageQueue(), m_spectrumVis, ui->glSpectrum);
 
