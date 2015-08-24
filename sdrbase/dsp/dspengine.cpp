@@ -322,7 +322,6 @@ void DSPEngine::handleSetSource(SampleSource* source)
 
 void DSPEngine::generateReport()
 {
-	bool needReport = false;
 	unsigned int sampleRate;
 	quint64 tunerFrequency;
 
@@ -334,20 +333,14 @@ void DSPEngine::generateReport()
 		tunerFrequency = 100000000;
 	}
 
-	if(sampleRate != m_sampleRate) {
+	if((sampleRate != m_sampleRate) || (tunerFrequency != m_tunerFrequency)) {
 		m_sampleRate = sampleRate;
-		needReport = true;
+		m_tunerFrequency = tunerFrequency;
 		for(SampleSinks::const_iterator it = m_sampleSinks.begin(); it != m_sampleSinks.end(); it++) {
 			DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, tunerFrequency);
 			signal->submit(&m_messageQueue, *it);
 		}
-	}
-	if(tunerFrequency != m_tunerFrequency) {
-		m_tunerFrequency = tunerFrequency;
-		needReport = true;
-	}
 
-	if(needReport) {
 		Message* rep = DSPEngineReport::create(m_sampleRate, m_tunerFrequency);
 		rep->submit(m_reportQueue);
 	}

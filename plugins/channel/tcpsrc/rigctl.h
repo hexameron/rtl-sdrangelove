@@ -15,8 +15,8 @@ class RigCtl {
 		void requestFreq(qint64 freq);
 		int getMode();
 		void setMode(int mode);
-		void setTunerFreq(qint64 freq) {m_tunerFreq = freq;}
-		void setTunerSamples(int samples) {m_samplerate2 = samples / 2;}
+		void setTunerFreq(qint64 freq);
+		void setTunerSamples(int samples);
 	private:
 		ChannelMarker* m_channel;
 		qint64 m_tunerFreq;

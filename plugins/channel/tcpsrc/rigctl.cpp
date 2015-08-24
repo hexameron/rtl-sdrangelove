@@ -186,6 +186,15 @@ void RigCtl::setMode(int mode) {
 	m_mode = mode;
 }
 
+void RigCtl::setTunerFreq(qint64 freq) {
+	m_freq += freq - m_tunerFreq;
+	m_tunerFreq = freq;
+}
+
+void RigCtl::setTunerSamples(int samples) {
+	m_samplerate2 = samples / 2;
+}
+
 RigCtlServer::RigCtlServer(QObject *parent, RigCtl *rig,  unsigned short rigctl_port)
         : QObject(parent) {
 	m_rig = rig;
