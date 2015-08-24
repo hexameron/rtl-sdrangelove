@@ -48,6 +48,7 @@ protected:
 	int m_requestedCenterFrequency;
 	int m_currentOutputSampleRate;
 	int m_currentCenterFrequency;
+	qint64 m_tunerFreq;
 	SampleVector m_sampleBuffer;
 
 	void applyConfiguration();

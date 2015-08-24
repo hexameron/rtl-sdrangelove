@@ -31,7 +31,7 @@ DSPEngine::DSPEngine(MessageQueue* reportQueue, QObject* parent) :
 	m_sampleSource(NULL),
 	m_sampleSinks(),
 	m_sampleRate(0),
-	m_centerFrequency(0),
+	m_tunerFrequency(1e8),
 	m_dcOffsetCorrection(false),
 	m_iqImbalanceCorrection(false),
 	m_iOffset(0),
@@ -324,31 +324,31 @@ void DSPEngine::generateReport()
 {
 	bool needReport = false;
 	unsigned int sampleRate;
-	quint64 centerFrequency;
+	quint64 tunerFrequency;
 
 	if(m_sampleSource != NULL) {
 		sampleRate = m_sampleSource->getSampleRate();
-		centerFrequency = m_sampleSource->getCenterFrequency();
+		tunerFrequency = m_sampleSource->getCenterFrequency();
 	} else {
 		sampleRate = 100000;
-		centerFrequency = 100000000;
+		tunerFrequency = 100000000;
 	}
 
 	if(sampleRate != m_sampleRate) {
 		m_sampleRate = sampleRate;
 		needReport = true;
 		for(SampleSinks::const_iterator it = m_sampleSinks.begin(); it != m_sampleSinks.end(); it++) {
-			DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0);
+			DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, tunerFrequency);
 			signal->submit(&m_messageQueue, *it);
 		}
 	}
-	if(centerFrequency != m_centerFrequency) {
-		m_centerFrequency = centerFrequency;
+	if(tunerFrequency != m_tunerFrequency) {
+		m_tunerFrequency = tunerFrequency;
 		needReport = true;
 	}
 
 	if(needReport) {
-		Message* rep = DSPEngineReport::create(m_sampleRate, m_centerFrequency);
+		Message* rep = DSPEngineReport::create(m_sampleRate, m_tunerFrequency);
 		rep->submit(m_reportQueue);
 	}
 }
@@ -411,7 +411,7 @@ void DSPEngine::handleMessages()
 		} else if(DSPAddSink::match(message)) {
 			SampleSink* sink = ((DSPAddSink*)message)->getSampleSink();
 			if(m_state == StRunning) {
-				DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0);
+				DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, m_tunerFrequency);
 				signal->submit(&m_messageQueue, sink);
 				sink->start();
 			}

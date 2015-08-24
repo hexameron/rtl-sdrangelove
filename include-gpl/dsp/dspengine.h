@@ -87,7 +87,7 @@ private:
 	AudioOutput m_audioOutput;
 
 	uint m_sampleRate;
-	quint64 m_centerFrequency;
+	quint64 m_tunerFrequency;
 
 	bool m_dcOffsetCorrection;
 	bool m_iqImbalanceCorrection;
