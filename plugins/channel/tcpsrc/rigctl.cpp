@@ -196,15 +196,22 @@ void RigCtl::setTunerSamples(int samples) {
 }
 
 RigCtlServer::RigCtlServer(QObject *parent, RigCtl *rig,  unsigned short rigctl_port)
-        : QObject(parent) {
+	: QObject(parent) {
+	bool result;
+	unsigned short port;
+
+	port = rigctl_port;
 	m_rig = rig;
-        server = new QTcpServer(this);
-        if (!server->listen(QHostAddress::Any, rigctl_port)) {
-                qCritical("rigctl: failed to bind socket on port %d\n", rigctl_port);
-                return;
-        }
-        qDebug("rigctl: Listening on port %d\n", rigctl_port);
-        connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
+	server = new QTcpServer(this);
+	do {
+		result = server->listen(QHostAddress::Any, port);
+	} while (!result && (port-- > rigctl_port - 5));
+	if (!result) {
+		qCritical("rigctl: failed to bind socket\n");
+		return;
+	}
+	qCritical("rigctl: Listening on port %d\n", port);
+	connect(server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 }
 
 void RigCtlServer::newConnection() {
