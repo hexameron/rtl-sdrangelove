@@ -4,7 +4,7 @@
 #include "gui/rollupwidget.h"
 #include "plugin/plugingui.h"
 
-#define BANDWIDTHSTRING {7813,15625,20833,31250,62500}
+#define BANDWIDTHSTRING {15625,20833,31250,41666,62500}
 
 class PluginAPI;
 class ChannelMarker;
