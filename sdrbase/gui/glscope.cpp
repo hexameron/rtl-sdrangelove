@@ -3,12 +3,13 @@
 #include "gui/glscope.h"
 #include "dsp/dspengine.h"
 
-#ifdef _WIN32
-static double log2f(double n)
+
+
+inline float log2f(float f)
 {
-	return log(n) / log(2.0);
+   return logf(f) * (float) (1.0 / M_LN2);
 }
-#endif
+
 
 GLScope::GLScope(QWidget* parent) :
 	QGLWidget(parent),
@@ -110,6 +111,7 @@ void GLScope::resizeGL(int width, int height)
 
 void GLScope::paintGL()
 {
+#if 0
 	if(!m_mutex.tryLock(2))
 		return;
 
@@ -118,7 +120,7 @@ void GLScope::paintGL()
 
 	handleMode();
 
-	if(m_displayTrace->size() - m_oldTraceSize != 0) {
+	if(m_displayTrace->size() != m_oldTraceSize) {
 		m_oldTraceSize = m_displayTrace->size();
 		emit traceSizeChanged(m_displayTrace->size());
 	}
@@ -172,7 +174,7 @@ void GLScope::paintGL()
 		glScalef(m_glScopeRect1.width(), -(m_glScopeRect1.height() / 2) * m_amp1, 1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_LINE_SMOOTH);
+		//glEnable(GL_LINE_SMOOTH);
 		glLineWidth(1.0f);
 		glColor4f(0, 1, 0, 0.3f);
 		glBegin(GL_LINE_LOOP);
@@ -184,7 +186,7 @@ void GLScope::paintGL()
 		glVertex2f(0, m_triggerLevelLow);
 		glVertex2f(1, m_triggerLevelLow);
 		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		//glDisable(GL_LINE_SMOOTH);
 		glPopMatrix();
 	}
 
@@ -194,7 +196,7 @@ void GLScope::paintGL()
 		glScalef(m_glScopeRect1.width() * (float)m_timeBase / (float)(m_displayTrace->size() - 1), -(m_glScopeRect1.height() / 2) * m_amp1, 1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_LINE_SMOOTH);
+		//glEnable(GL_LINE_SMOOTH);
 		glLineWidth(1.0f);
 		glColor4f(1, 1, 0, 0.4f);
 		int start = m_timeOfsProMill * (m_displayTrace->size() - (m_displayTrace->size() / m_timeBase)) / 1000;
@@ -213,7 +215,7 @@ void GLScope::paintGL()
 			glVertex2f(i - start, v);
 		}
 		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		//glDisable(GL_LINE_SMOOTH);
 		glPopMatrix();
 	}
 
@@ -259,7 +261,7 @@ void GLScope::paintGL()
 		glScalef(m_glScopeRect2.width(), -(m_glScopeRect2.height() / 2) * m_amp2, 1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_LINE_SMOOTH);
+		//glEnable(GL_LINE_SMOOTH);
 		glLineWidth(1.0f);
 		glColor4f(0, 1, 0, 0.3f);
 		glBegin(GL_LINE_LOOP);
@@ -271,7 +273,7 @@ void GLScope::paintGL()
 		glVertex2f(0, m_triggerLevelLow);
 		glVertex2f(1, m_triggerLevelLow);
 		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		//glDisable(GL_LINE_SMOOTH);
 		glPopMatrix();
 	}
 
@@ -281,7 +283,7 @@ void GLScope::paintGL()
 		glScalef(m_glScopeRect2.width() * (float)m_timeBase / (float)(m_displayTrace->size() - 1), -(m_glScopeRect2.height() / 2) * m_amp2, 1);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_LINE_SMOOTH);
+		//glEnable(GL_LINE_SMOOTH);
 		glLineWidth(1.0f);
 		glColor4f(1, 1, 0, 0.4f);
 		int start = m_timeOfsProMill * (m_displayTrace->size() - (m_displayTrace->size() / m_timeBase)) / 1000;
@@ -300,13 +302,14 @@ void GLScope::paintGL()
 			glVertex2f(i - start, v);
 		}
 		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		//glDisable(GL_LINE_SMOOTH);
 		glPopMatrix();
 	}
 
 	glPopMatrix();
 	m_dataChanged = false;
 	m_mutex.unlock();
+#endif
 }
 
 void GLScope::mousePressEvent(QMouseEvent* event)

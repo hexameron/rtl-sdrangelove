@@ -21,6 +21,7 @@
 #include <QGLWidget>
 #include <QTimer>
 #include <QMutex>
+#include <QtOpenGL/qglshaderprogram.h>
 #include "dsp/dsptypes.h"
 #include "gui/scaleengine.h"
 #include "dsp/channelmarker.h"
@@ -130,6 +131,13 @@ private:
 	bool m_displayHistogram;
 
 	bool m_displayChanged;
+	GLuint m_channelMarker;
+
+	QGLShaderProgram shaderprog;
+	int vertexAtt;
+	int texcoordAtt;
+	int matrixUni;
+	int texUni;
 
 	void updateWaterfall(const std::vector<Real>& spectrum);
 	void updateHistogram(const std::vector<Real>& spectrum);
@@ -137,6 +145,7 @@ private:
 	void initializeGL();
 	void resizeGL(int width, int height);
 	void paintGL();
+	void GLtexBox();
 
 	void stopDrag();
 	void applyChanges();

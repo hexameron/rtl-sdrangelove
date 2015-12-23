@@ -26,7 +26,9 @@ MESSAGE_CLASS_DEFINITION(TCPSrc::MsgTCPSrcSpectrum, Message)
 
 TCPSrc::TCPSrc(MessageQueue* uiMessageQueue, TCPSrcGUI* tcpSrcGUI, SampleSink* spectrum)
 {
+	m_rig = NULL;
 	m_inputSampleRate = 96000;
+	m_inputBandwidth = 96000;
 	m_sampleFormat = FormatSSB;
 	m_outputSampleRate = 48000;
 	m_rfBandwidth = 32000;
@@ -159,10 +161,12 @@ bool TCPSrc::handleMessage(Message* cmd)
 	if(DSPSignalNotification::match(cmd)) {
 		DSPSignalNotification* signal = (DSPSignalNotification*)cmd;
 		qDebug("%d samples/sec, %lld Hz offset", signal->getSampleRate(), signal->getFrequencyOffset());
+		m_inputBandwidth = signal->getTunerBandwidth();
 		m_inputSampleRate = signal->getSampleRate();
+		m_inputFreq = signal->getTunerFrequency();
 		if (m_rig) {
-			m_rig->setTunerSamples( signal->getTunerBandwidth() );
-			m_rig->setTunerFreq( signal->getTunerFrequency() );
+			m_rig->setTunerSamples(m_inputBandwidth);
+			m_rig->setTunerFreq(m_inputFreq);
 		}
 		m_nco.setFreq(-signal->getFrequencyOffset(), m_inputSampleRate);
 		m_interpolator.create(16, m_inputSampleRate, m_rfBandwidth / 2.0);

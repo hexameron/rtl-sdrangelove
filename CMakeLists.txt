@@ -101,9 +101,9 @@ set(sdrbase_SOURCES
 	sdrbase/settings/preset.cpp
 	sdrbase/settings/settings.cpp
 
+	sdrbase/util/glmath.cpp
 	sdrbase/util/message.cpp
 	sdrbase/util/messagequeue.cpp
-	#sdrbase/util/miniz.cpp
 	sdrbase/util/simpleserializer.cpp
 	sdrbase/util/spinlock.cpp
 )

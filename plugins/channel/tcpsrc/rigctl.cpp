@@ -165,10 +165,10 @@ void RigCtl::requestFreq(qint64 freq) {
 	qint64 newfreq;
 
 	newfreq = freq - m_tunerFreq;
-	if (newfreq > m_samplerate2)
-		newfreq = m_samplerate2;
-	else if (newfreq < -m_samplerate2)
-		newfreq = -m_samplerate2;
+	if (newfreq - m_samplerate2 > 0)
+		newfreq = (qint64)m_samplerate2;
+	else if (newfreq + m_samplerate2 < 0)
+		newfreq = -(qint64)m_samplerate2;
 
 	m_freq = newfreq + m_tunerFreq;
 	m_channel->setCenterFrequency(newfreq);
