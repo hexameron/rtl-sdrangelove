@@ -10,7 +10,7 @@ V4LGui::V4LGui(PluginAPI* pluginAPI, QWidget* parent) :
 	m_sampleSource(NULL)
 {
 	ui->setupUi(this);
-	ui->centerFrequency->setValueRange(7, 50000U, 1999000U);
+	ui->centerFrequency->setValueRange(7, 9000U, 1999000U);
 	connect(&m_updateTimer, SIGNAL(timeout()), this, SLOT(updateHardware()));
 	displaySettings();
 
