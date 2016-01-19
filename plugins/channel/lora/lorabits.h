@@ -59,16 +59,11 @@ void LoRaDemod::hamming6(char* c, int size)
 	c[i] = 0;
 }
 
-// data whitening (6 bit)
-void LoRaDemod::prng6(char* inout, int size)
+// data whitening (4 bit)
+void LoRaDemod::whiten(char* inout, int size)
 {
 	const char otp[] = {
-	//explicit mode
-	"cOGGg7CM2=b5a?<`i;T2of5jDAB=2DoQ9ko?h_RLQR4@Z\\`9jY\\PX89lHX8h_R]c_^@OB<0`W08ik?Mg>dQZf3kn5Je5R=R4h[<Ph90HHh9j;h:mS^?f:lQ:GG;nU:b?WFU20Lf4@A?`hYJMnW\\QZ\\AMIZ<h:jQk[PP<`6[Z"
-#if 0
-	// implicit mode (offset 2 symbols)
-	"5^ZSm0=cOGMgUB=bNcb<@a^T;_f=6DEB]2ImPIKg:j]RlYT4YZ<`9hZ\\PPb;@8X8i]Zmc_6B52\\8oUPHIcBOc>dY?d9[n5Lg]b]R8hR<0`T008h9c9QJm[c?a:lQEGa;nU=b_WfUV2?V4@c=8h9B9njlQZDC@9Z<Q8\\iiX\\Rb6k:iY"
-#endif
+		"DHOOPJA^EHAOCIOEFJIGLJPDNDADIGCJPGGNOOGJECLAMFALDCMABBBGIIIBCHPKHFNOAJICCBOGENKOOJFDICLBODPDEDAGDIMEBJAGKIMBKHOLEHKKOBEDKCPBGDOCHBHCNAAFJKBBIGINDPMKBFBOJIKBGHHKGEDGMIGGJFMJCFLGMJC"
 	};
 	int i, maxchars;
 
@@ -76,6 +71,6 @@ void LoRaDemod::prng6(char* inout, int size)
 	if (size < maxchars)
 		maxchars = size;
 	for (i = 0; i < maxchars; i++)
-		inout[i] ^= (otp[i] - 48);
+		inout[i] ^= (otp[i] - 65);
 }
 

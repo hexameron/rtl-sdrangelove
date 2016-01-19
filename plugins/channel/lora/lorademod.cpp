@@ -28,7 +28,7 @@ MESSAGE_CLASS_DEFINITION(LoRaDemod::MsgConfigureLoRaDemod, Message)
 LoRaDemod::LoRaDemod(SampleSink* sampleSink) :
 	m_sampleSink(sampleSink)
 {
-	m_Bandwidth = 7813;
+	m_Bandwidth = 15625;
 	m_sampleRate = 96000;
 	m_frequency = 0;
 	m_nco.setFreq(m_frequency, m_sampleRate);
@@ -84,14 +84,14 @@ void LoRaDemod::dumpRaw()
 		bin = (history[(j + 1)  * 4] + m_tune ) & (LORA_SFFT_LEN - 1);
 		text[j] = toGray(bin >> 1);
 	}
-	prng6(text, max);
 	// First block is always 8 symbols
 	interleave6(text, 6);
 	interleave6(&text[8], max);
 	hamming6(text, 6);
 	hamming6(&text[8], max);
+	whiten(text,max);
 
-	for ( j=0; j < max / 2; j++) {
+	for (j=0; j < max / 2; j++) {
 		text[j] = (text[j * 2 + 1] << 4) | (0xf & text[j * 2 + 0]);
 		if ((text[j] < 32 )||( text[j] > 126))
 			text[j] = 0x5f;

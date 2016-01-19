@@ -50,7 +50,7 @@ private:
 	short toGray(short bin);
 	void interleave6(char* inout, int size);
 	void hamming6(char* inout, int size);
-	void prng6(char* inout, int size);
+	void whiten(char* inout, int size);
 
 	class MsgConfigureLoRaDemod : public Message {
 		MESSAGE_CLASS_DECLARATION
