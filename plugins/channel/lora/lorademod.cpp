@@ -81,7 +81,7 @@ void LoRaDemod::dumpRaw()
 		max = 140; // about 2 symbols to each char
 
 	for ( j=0; j < max; j++) {
-		bin = (history[(j + 1)  * 4] + m_tune ) & (LORA_SFFT_LEN - 1);
+		bin = (history[j * 4 + 5] + m_tune ) & (LORA_SFFT_LEN - 1);
 		text[j] = toGray(bin >> 1);
 	}
 	// First block is always 8 symbols

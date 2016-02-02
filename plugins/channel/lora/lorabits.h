@@ -1,11 +1,20 @@
 /*
+ This is not working as well as I had thought. A year ago I was getting reliable decodes; but not now. I have noticed a lot more drift using the RFM98 module with intermittent rather than continuous transmission.
+
+There is a good write up on LoRa modulation at "https://revspace.nl/DecodingLora".
+
+The data whitening could have been added at any stage of the pipeline, but should be using the CCITT 8 bit prng at "semtech.com/images/datasheet/AN1200.18_STD.pdf".
+
+LowDataRate reduces the number of bits per symbol by two, which helps combat drift at low bandwidths.
+
+
  Interleaving is "easiest" if the same number of bits is used per symbol as for FEC
  Chosen mode "spreading 8, low rate" has 6 bits per symbol, so use 4:6 FEC
 
  More spreading needs higher frequency resolution and longer time on air, increasing drift errors.
  Want higher bandwidth when using more spreading, which needs more CPU and a better FFT.
 
- Six bit Hamming can only correct long runs of drift errors when not using interleaving. Interleaving defeats the point of using Gray code and puts multiple bit errors into single FEC blocks. Hardware decoding uses RSSI to detect the symbols most likely to be damaged, so that individual bits can be repaired after de-interleaving. 
+ Interleaving defeats the point of using Gray code and puts multiple bit errors into single FEC blocks. Hardware decoding may use RSSI to detect the symbols most likely to be damaged, so that individual bits can be repaired after de-interleaving.
 
  Using Implicit Mode: explicit starts with a 4:8 block and seems to have a different whitening sequence.
 */
@@ -63,7 +72,7 @@ void LoRaDemod::hamming6(char* c, int size)
 void LoRaDemod::whiten(char* inout, int size)
 {
 	const char otp[] = {
-		"DHOOPJA^EHAOCIOEFJIGLJPDNDADIGCJPGGNOOGJECLAMFALDCMABBBGIIIBCHPKHFNOAJICCBOGENKOOJFDICLBODPDEDAGDIMEBJAGKIMBKHOLEHKKOBEDKCPBGDOCHBHCNAAFJKBBIGINDPMKBFBOJIKBGHHKGEDGMIGGJFMJCFLGMJC"
+		"DHOOPJANEHAOCIOEFJIGLJPDNDADIGCJPGGNOOGJECLAMFALDCMABBBGIIIBCHPKHFNOAJICCBOGENKOOJFDICLBODPDEDAGDIMEBJAGKIMBKHOLEHKKOBEDKCPBGDOCHBHCNAAFJKBBIGINDPMKBFBOJIKBGHHKGEDGMIGGJFMJCFLGMJC"
 	};
 	int i, maxchars;
 
