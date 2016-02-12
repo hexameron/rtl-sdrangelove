@@ -140,7 +140,7 @@ LoRaDemodGUI::LoRaDemodGUI(PluginAPI* pluginAPI, QWidget* parent) :
 
 	m_channelMarker = new ChannelMarker(this);
 	m_channelMarker->setColor(Qt::magenta);
-	m_channelMarker->setBandwidth(7813);
+	m_channelMarker->setBandwidth(15625);
 	m_channelMarker->setCenterFrequency(0);
 	m_channelMarker->setVisible(true);
 	connect(m_channelMarker, SIGNAL(changed()), this, SLOT(viewChanged()));

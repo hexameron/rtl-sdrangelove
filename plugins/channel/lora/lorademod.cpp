@@ -32,7 +32,7 @@ LoRaDemod::LoRaDemod(SampleSink* sampleSink) :
 	m_sampleRate = 96000;
 	m_frequency = 0;
 	m_nco.setFreq(m_frequency, m_sampleRate);
-	m_interpolator.create(16, m_sampleRate, m_Bandwidth/1.9);
+	m_interpolator.create(16, m_sampleRate, m_Bandwidth/2.0);
 	m_sampleDistanceRemain = (Real)m_sampleRate / m_Bandwidth;
 
 	m_chirp = 0;
@@ -220,14 +220,14 @@ bool LoRaDemod::handleMessage(Message* cmd)
 		DSPSignalNotification* signal = (DSPSignalNotification*)cmd;
 		m_sampleRate = signal->getSampleRate();
 		m_nco.setFreq(-signal->getFrequencyOffset(), m_sampleRate);
-		m_interpolator.create(16, m_sampleRate, m_Bandwidth/1.9);
+		m_interpolator.create(16, m_sampleRate, m_Bandwidth/2.0);
 		m_sampleDistanceRemain = m_sampleRate / m_Bandwidth;
 		cmd->completed();
 		return true;
 	} else if(MsgConfigureLoRaDemod::match(cmd)) {
 		MsgConfigureLoRaDemod* cfg = (MsgConfigureLoRaDemod*)cmd;
 		m_Bandwidth = cfg->getBandwidth();
-		m_interpolator.create(16, m_sampleRate, m_Bandwidth/1.9);
+		m_interpolator.create(16, m_sampleRate, m_Bandwidth/2.0);
 		cmd->completed();
 		return true;
 	} else {
