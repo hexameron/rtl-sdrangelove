@@ -31,6 +31,7 @@ DSPEngine::DSPEngine(MessageQueue* reportQueue, QObject* parent) :
 	m_sampleSource(NULL),
 	m_sampleSinks(),
 	m_sampleRate(0),
+	m_tunerBandwidth(48000),
 	m_tunerFrequency(1e8),
 	m_dcOffsetCorrection(false),
 	m_iqImbalanceCorrection(false),
@@ -337,7 +338,7 @@ void DSPEngine::generateReport()
 		m_sampleRate = sampleRate;
 		m_tunerFrequency = tunerFrequency;
 		for(SampleSinks::const_iterator it = m_sampleSinks.begin(); it != m_sampleSinks.end(); it++) {
-			DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, tunerFrequency);
+			DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, tunerFrequency, m_tunerBandwidth);
 			signal->submit(&m_messageQueue, *it);
 		}
 
@@ -404,7 +405,7 @@ void DSPEngine::handleMessages()
 		} else if(DSPAddSink::match(message)) {
 			SampleSink* sink = ((DSPAddSink*)message)->getSampleSink();
 			if(m_state == StRunning) {
-				DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, m_tunerFrequency);
+				DSPSignalNotification* signal = DSPSignalNotification::create(m_sampleRate, 0, m_tunerFrequency, m_tunerBandwidth);
 				signal->submit(&m_messageQueue, sink);
 				sink->start();
 			}

@@ -68,7 +68,8 @@ bool Channelizer::handleMessage(Message* cmd)
 		applyConfiguration();
 		cmd->completed();
 		if(m_sampleSink != NULL) {
-			signal = DSPSignalNotification::create(m_currentOutputSampleRate, m_currentCenterFrequency, m_tunerFreq);
+			signal = DSPSignalNotification::create(m_currentOutputSampleRate, m_currentCenterFrequency,
+											m_tunerFreq, m_inputSampleRate);
 			if(!m_sampleSink->handleMessage(signal))
 				signal->completed();
 		}
@@ -80,7 +81,8 @@ bool Channelizer::handleMessage(Message* cmd)
 		applyConfiguration();
 		cmd->completed();
 		if(m_sampleSink != NULL) {
-			DSPSignalNotification* signal = DSPSignalNotification::create(m_currentOutputSampleRate, m_currentCenterFrequency, m_tunerFreq);
+			DSPSignalNotification* signal = DSPSignalNotification::create(m_currentOutputSampleRate, m_currentCenterFrequency,
+											m_tunerFreq, m_inputSampleRate);
 			if(!m_sampleSink->handleMessage(signal))
 				signal->completed();
 		}

@@ -161,8 +161,8 @@ bool TCPSrc::handleMessage(Message* cmd)
 		qDebug("%d samples/sec, %lld Hz offset", signal->getSampleRate(), signal->getFrequencyOffset());
 		m_inputSampleRate = signal->getSampleRate();
 		if (m_rig) {
-			m_rig->setTunerSamples(m_inputSampleRate);
-			m_rig->setTunerFreq(signal->getTunerFrequency());
+			m_rig->setTunerSamples( signal->getTunerBandwidth() );
+			m_rig->setTunerFreq( signal->getTunerFrequency() );
 		}
 		m_nco.setFreq(-signal->getFrequencyOffset(), m_inputSampleRate);
 		m_interpolator.create(16, m_inputSampleRate, m_rfBandwidth / 2.0);

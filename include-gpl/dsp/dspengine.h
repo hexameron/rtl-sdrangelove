@@ -87,6 +87,7 @@ private:
 	AudioOutput m_audioOutput;
 
 	uint m_sampleRate;
+	int  m_tunerBandwidth;
 	quint64 m_tunerFrequency;
 
 	bool m_dcOffsetCorrection;

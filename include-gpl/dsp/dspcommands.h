@@ -211,24 +211,27 @@ class SDRANGELOVE_API DSPSignalNotification : public Message {
 
 public:
 	int getSampleRate() const { return m_sampleRate; }
+	int getTunerBandwidth() const { return m_tunerBandwidth; };
 	qint64 getFrequencyOffset() const { return m_frequencyOffset; }
 	qint64 getTunerFrequency() const { return m_tunerFrequency; }
 
-	static DSPSignalNotification* create(int sampleRate, quint64 frequencyOffset, qint64 tunerFrequency)
+	static DSPSignalNotification* create(int sampleRate, quint64 frequencyOffset, qint64 tunerFrequency, int tunerBandwidth)
 	{
-		return new DSPSignalNotification(sampleRate, frequencyOffset, tunerFrequency);
+		return new DSPSignalNotification(sampleRate, frequencyOffset, tunerFrequency, tunerBandwidth);
 	}
 
 private:
 	int m_sampleRate;
+	int m_tunerBandwidth;
 	qint64 m_frequencyOffset;
 	qint64 m_tunerFrequency;
 
-	DSPSignalNotification(int samplerate, qint64 frequencyOffset, qint64 tunerFrequency) :
+	DSPSignalNotification(int samplerate, qint64 frequencyOffset, qint64 tunerFrequency, int tunerBandwidth) :
 		Message(),
 		m_sampleRate(samplerate),
 		m_frequencyOffset(frequencyOffset),
-		m_tunerFrequency(tunerFrequency)
+		m_tunerFrequency(tunerFrequency),
+		m_tunerBandwidth(tunerBandwidth)
 	{ }
 };
 
