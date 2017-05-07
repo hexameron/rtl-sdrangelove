@@ -85,7 +85,7 @@ V4LThread::OpenSource(const char *filename)
 		qCritical(" Expecting format CS14LE, got : %4.4s", (char *)&fmt.fmt.sdr.pixelformat);
 
 		CLEAR(req);
-		req.count = 8;
+		req.count = 16;
 		req.type = V4L2_BUF_TYPE_SDR_CAPTURE;
 		req.memory = V4L2_MEMORY_MMAP;
 		xioctl(fd, VIDIOC_REQBUFS, &req);
